@@ -36,10 +36,10 @@ try {
     //Server settings
     $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
     $mail->isSMTP();                                            //Send using SMTP
-    $mail->Host       = 'mail.hits.co.id';                     //Set the SMTP server to send through
+    $mail->Host       = 'relay.excellent.co.id';                     //Set the SMTP server to send through
     $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-    $mail->Username   = 'hcis@hits.co.id';                     //SMTP username
-    $mail->Password   = 'hits123456';                               //SMTP password
+    $mail->Username   = 'relay.vavai@excellent.co.id';                     //SMTP username
+    $mail->Password   = 'StdPwdStrong2021!';                               //SMTP password
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
     $mail->Port       = 587;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
 
@@ -96,16 +96,16 @@ Download [CodeIgniter](https://codeigniter.com/download), here use CodeIgniter 3
 			
 			$config = array(
 				'protocol' => 'smtp', // 'mail', 'sendmail', or 'smtp'
-				'smtp_host' => 'mail.hits.co.id', 
-				'smtp_user' => 'hcis@hits.co.id',
-				'smtp_pass' => 'hits123456',
+				'smtp_host' => 'relay.excellent.co.id', 
+				'smtp_user' => 'relay.vavai@excellent.co.id',
+				'smtp_pass' => 'StdPwdStrong2021!',
 				'smtp_port' => 587, // u can use 465 or 25 or 587
 				'smtp_crypto' => 'tls', //can be 'ssl' or 'tls' for example
 				'mailtype' => 'html', //plaintext 'text' mails or 'html'
 				'charset' => 'utf-8',
 				'newline' => "\r\n"
 			);
-
+		
 			$this->load->library('email', $config);
 			
 			$from = 'from@domain.com';
@@ -213,13 +213,13 @@ now you can test sen email by browser.
 				'class' => 'ext.yii-mail.YiiMail',
 				'transportType'=>'smtp',
 				'transportOptions'=>array(
-						'host'=>'mail.hits.co.id',
-						'username'=>'hcis@hits.co.id',
-						'password'=>'hits123456',
+						'host'=>'relay.excellent.co.id',
+						'username'=>'relay.vavai@excellent.co.id',
+						'password'=>'StdPwdStrong2021!',
 						'port'=>'587', // u can use 465 or 587 or 25						
 				),
 				'viewPath' => 'application.views.mail',	
-				
+		
 		),
 ```
 Hint: The view path points to '/protected/views/mail'.
