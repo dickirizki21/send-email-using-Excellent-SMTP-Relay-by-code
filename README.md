@@ -44,12 +44,12 @@ try {
     $mail->Port       = 587;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
 
     //Recipients
-    $mail->setFrom('from@example.com', 'Mailer');
-    $mail->addAddress('user@example.net', 'Joe User');     //Add a recipient
-    $mail->addAddress('user2@example.com');               //Name is optional
-    $mail->addReplyTo('info@example.com', 'Information');
-    $mail->addCC('cc@example.com');
-    $mail->addBCC('bcc@example.com');
+    $mail->setFrom('marketing@company.com', 'Mailer');
+    $mail->addAddress('anton@gmail.com', 'Anton');     //Add a recipient
+    $mail->addAddress('doni@gmail.com');               //Name is optional
+    $mail->addReplyTo('noreply@company.com', 'Information');
+    $mail->addCC('marissa@yahoo.com');
+    $mail->addBCC('mira@outlook.com');
 
     //Attachments
     $mail->addAttachment('/var/tmp/file.tar.gz');         //Add attachments
@@ -108,8 +108,8 @@ Download [CodeIgniter](https://codeigniter.com/download), here use CodeIgniter 3
 		
 			$this->load->library('email', $config);
 			
-			$from = 'from@domain.com';
-			$to = 'to@domain.com';
+			$from = 'marketing@company.com';
+			$to = 'marissa@gmail.com';
 			$subject = 'Example Subject';
 			$message = 'hello this is test message';
 
@@ -243,8 +243,8 @@ public function SendMail()
 		$params              	= array('myMail'=>$studModel1);
 		$message->subject    	= 'My TestSubject';
 		$message->setBody($params, 'text/html');				
-		$message->addTo('yourmail@domain.com');
-		$message->from = 'admin@domain .com';	
+		$message->addTo('marissa@gmail.com');
+		$message->from = 'markketing@company.com';	
 		Yii::app()->mail->send($message);		
 	}
 
