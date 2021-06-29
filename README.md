@@ -7,8 +7,6 @@ i will be sharing to you how to send email using **Excellent SMTP Relay Code**.
 PHP Code for Send Email Using SMTP Relay.
 ------
 
-* **Framework PHP**.
-
 1.  Native.
 
 If you use php native, you can use [PHP Mailer](https://github.com/PHPMailer/PHPMailer). PHPMailer is available on Packagist (using semantic versioning), and installation via Composer is the recommended way to install PHPMailer. Just add this line to your ```composer.json``` file:
