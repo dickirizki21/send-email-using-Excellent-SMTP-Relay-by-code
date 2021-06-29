@@ -1,72 +1,270 @@
-# Config send mail by zimbra using PHP - Java
+# Send email using Excellent SMTP Relay by code/programming.
 
-* Config for send mail For PHP.
+Do you using zimbra and want send email by code?.
+
+i will be sharing to you how to send email using **Excellent SMTP Relay Code**.
+
+PHP Code for Send Email Using SMTP Relay.
+------
+
+* **Framework PHP**.
+
+1. CodeIgniter.
+
+Download [CodeIgniter](https://codeigniter.com/download), here use CodeIgniter 3, and create file in ```aplication/controller```, this file for config send email with php and you can use library from Code Igniter and you can call the library ```$this->load->library('email', $config)```.
+
 ```php
-$config = array(
-				'protocol' => '', //'mail', 'sendmail', or 'smtp'
-				'smtp_host' => 'yourmail.co.id', 
-				'smtp_user' => 'user.co.id',
+<?php  
+    if (!defined('BASEPATH'))exit('No direct script access allowed');
+
+    class Export extends CI_Controller {
+
+        public function __construct() {
+            parent::__construct();
+	    $this->load->model('site');
+        }
+		
+        public function index(){
+            $data['title'] = 'Create Excel | TechArise';
+            $data['result'] = $this->site->getProduct();  
+            $this->load->view('index', $data);
+        }
+		
+		public function sendEmail() {
+			
+			$data['getInfo'] = $this->site->getProduct();
+			$htmlContent = $this->load->view('generatepdffile', $data, TRUE);       
+			
+			$config = array(
+				'protocol' => 'smtp', // 'mail', 'sendmail', or 'smtp'
+				'smtp_host' => 'yourdomain.com', 
+				'smtp_user' => 'user@example.com',
 				'smtp_pass' => 'passworduser',
-                                'smtp_port' => 587, //587 or 465 or 25
-				'smtp_crypto' => '', //can be 'ssl' or 'tls' for example
-				'mailtype' => '', //plaintext 'text' mails or 'html'
+				'smtp_port' => 587, // u can use 465 or 25 or 587
+				'smtp_crypto' => 'tls', //can be 'ssl' or 'tls' for example
+				'mailtype' => 'html', //plaintext 'text' mails or 'html'
 				'charset' => 'utf-8',
 				'newline' => "\r\n"
 			);
+
+			$this->load->library('email', $config);
+			
+			$from = 'from@domain.com';
+			$to = 'to@domain.com';
+			$subject = 'Example Subject';
+			$message = 'hello this is test message';
+
+			$this->email->set_newline("\r\n");
+			$this->email->from($from);
+			$this->email->to($to);
+			$this->email->subject($subject);
+			$this->email->message($htmlContent);
+
+			if ($this->email->send()) {
+				echo 'Your Email has successfully been sent.';
+			} else {
+				show_error($this->email->print_debugger());
+			}
+         }
+        
+    }
+?>
 ```
-* Config for send mail For Java.
-```java
-package com.example.smtp;package com.example.smtp;import java.util.Properties;
-import javax.mail.Message;import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;import javax.mail.Session;
-import javax.mail.Transport;import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-public class SendHTMLEmail {   
-public static void main(String[ ] args) {      
-String to = "johndoe@gmail.com";
-      String from = "yourmail@example.com";      
-final String username = "yourlogin";      
-final String password = "yourpassword";
-      String host = "smtp.example.com";
-      Properties props = new Properties();      
-props.put("mail.smtp.auth", "true");      
-props.put("mail.smtp.starttls.enable", "true");      
-props.put("mail.smtp.host", host);      
-props.put("mail.smtp.port", "2525");
-      // Get the Session object      
-Session session = Session.getInstance(props,         
-new javax.mail.Authenticator() {            
-protected PasswordAuthentication getPasswordAuthentication() {               
-return new PasswordAuthentication(username, password);            
-} 
-});
-      try {            
-// Create a default MimeMessage object            
-Message message = new MimeMessage(session);
-    message.setFrom(new InternetAddress(from));
- message.setRecipients(Message.RecipientType.TO,              
-InternetAddress.parse(to));
- message.setSubject("HTML message with an image and attachment");
-    // Put your HTML content here as well as refer to the hosted image    
-message.setContent(              
-"<p><img src="https://yourserver.com/yourlogo.png" alt="img" /></p> +     
-<p>Hey, do you like our logo?</p>",             
-"text/html");
-    // Send message    
-Transport.send(message);
-    System.out.println("Sent message successfully....");
-      } catch (MessagingException e) {    
-e.printStackTrace();    throw new RuntimeException(e);      
-}   
+Then you must be create view for ui send email, create file for view at ```aplication/views```.
+```php
+<div class="row">
+    <div class="col-lg-12">
+        <h2>Send Email using CodeIgniter Email Library</h2>                 
+    </div>
+</div><!-- /.row -->
+<div class="row">
+    <div class="col-lg-12">
+       <a href="<?php echo base_url();?>export/sendEmail" class="pull-right btn btn-primary btn-xs" style="margin: 2px;"><i class="fa fa-plus"></i> Send Email</a>
+    </div>
+</div>
+<hr>
+<?php foreach($result as $detail){ ?>
+		<table border="0" width="80%" align="center">
+			<tr>
+				<td width="5%"><?php echo $detail['id']; ?></td>
+				<td width="12%"><img src="<?php echo base_url(); ?>assets/images/Penguins.jpg" height="85" width="75"></td>
+				<td width="10%"><b>Price:</b> <?php echo number_format($detail['price'], 2, '.', ''); ?></td>
+				<td width="30%"><b>Name:</b> <?php echo $detail['name']; ?></td>
+				<td width="43%"><b>Descriptipn:</b> <?php echo $detail['description']; ?></td>
+			</tr>
+		</table>
+		<hr>
+<?php } ?>
+```
+
+and create file for fill bodytext email at ```aplication/views```.
+```php
+<style>
+h1{
+	font-size:25px;
+	color:blue;
 }
+table{
+	margin-top:20px;
+}
+</style>
+<h1 align="center"> Products Report </h1><hr>
+<br/><br/>
+<?php foreach($getInfo as $detail){ ?>
+		<table border="0">
+			<tr>
+				<td width="5%"><?php echo $detail['id']; ?></td>
+				<td width="12%"><img src="<?php echo base_url(); ?>assets/images/Penguins.jpg" height="85" width="75"></td>
+				<td width="10%"><b>Price:</b> <?php echo number_format($detail['price'], 2, '.', ''); ?></td>
+				<td width="30%"><b>Name:</b> <?php echo $detail['name']; ?></td>
+				<td width="43%"><b>Descriptipn:</b> <?php echo $detail['description']; ?></td>
+			</tr>
+		</table>
+		<hr>
+<?php } ?>
+```
+
+and the last u must create model file for connect both at ```aplication/models```.
+```php
+<?php
+class Site extends CI_Model{
+	
+	public function getProduct($id = ''){
+		$this->db->select('*');
+		$this->db->from('products');
+		if($id != ''){
+			$this->db->where('id',$id);
+		}
+		return $this->db->get()->result_array();
+	}
+}
+?>
+```
+
+now you can test sen email by browser.
+ 
+2. Yii
+
+* donwnload the extension from path [Yii Mail](http://code.google.com/p/yii-mail/downloads/list).
+* Place the extracted folder inside the extensions folder.
+* Modify the config file main.php like below,
+
+```php
+'mail' => array(
+				'class' => 'ext.yii-mail.YiiMail',
+				'transportType'=>'smtp',
+				'transportOptions'=>array(
+						'host'=>'<hostanme>',
+						'username'=>'<username>',
+						'password'=>'<password>',
+						'port'=>'25', // u can use 465 or 587 or 25						
+				),
+				'viewPath' => 'application.views.mail',				
+		),
+```
+Hint: The view path points to '/protected/views/mail'.
+
+* Import the extension in the main.php file.
+```php
+'ext.yii-mail.YiiMailMessage',
+```
+* Controller function to send the mail.
+
+```php
+public function SendMail()
+	{	
+		$message		= new YiiMailMessage;
+           //this points to the file test.php inside the view path
+		$message->view		= "test";
+		$sid                 	= 1;
+		$criteria            	= new CDbCriteria();
+		$criteria->condition 	= "studentID=".$sid."";			
+		$studModel1 	     	= Student::model()->findByPk($sid);		
+		$params              	= array('myMail'=>$studModel1);
+		$message->subject    	= 'My TestSubject';
+		$message->setBody($params, 'text/html');				
+		$message->addTo('yourmail@domain.com');
+		$message->from = 'admin@domain .com';	
+		Yii::app()->mail->send($message);		
+	}
+
+```
+
+```php
+ test.php file
+```
+
+```php
+<html>
+		<head>
+		</head>
+		<body>
+			Dear <?php 
+			 echo $myMail->studentName;
+			 ?>
+ 				<br>This is a test mail.
+		</body>
+	   </html>
+```
+3.  Native.
+
+If you use php native, you can use [PHP Mailer](https://github.com/PHPMailer/PHPMailer). PHPMailer is available on Packagist (using semantic versioning), and installation via Composer is the recommended way to install PHPMailer. Just add this line to your ```composer.json``` file:
+```php
+"phpmailer/phpmailer": "^6.5"
+```
+or run
+```php
+composer require phpmailer/phpmailer
+```
+After ```PHPMailer``` already install u can try this PHP example:
+```php
+<?php
+//Import PHPMailer classes into the global namespace
+//These must be at the top of your script, not inside a function
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
+//Load Composer's autoloader
+require 'vendor/autoload.php';
+
+//Create an instance; passing `true` enables exceptions
+$mail = new PHPMailer(true);
+
+try {
+    //Server settings
+    $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
+    $mail->isSMTP();                                            //Send using SMTP
+    $mail->Host       = 'smtp.example.com';                     //Set the SMTP server to send through
+    $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
+    $mail->Username   = 'user@example.com';                     //SMTP username
+    $mail->Password   = 'secret';                               //SMTP password
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
+    $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
+
+    //Recipients
+    $mail->setFrom('from@example.com', 'Mailer');
+    $mail->addAddress('user@example.net', 'Joe User');     //Add a recipient
+    $mail->addAddress('user2@example.com');               //Name is optional
+    $mail->addReplyTo('info@example.com', 'Information');
+    $mail->addCC('cc@example.com');
+    $mail->addBCC('bcc@example.com');
+
+    //Attachments
+    $mail->addAttachment('/var/tmp/file.tar.gz');         //Add attachments
+    $mail->addAttachment('/tmp/image.jpg', 'new.jpg');    //Optional name
+
+    //Content
+    $mail->isHTML(true);                                  //Set email format to HTML
+    $mail->Subject = 'Here is the subject';
+    $mail->Body    = 'This is the HTML message body <b>in bold!</b>';
+    $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
+
+    $mail->send();
+    echo 'Message has been sent';
+} catch (Exception $e) {
+    echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
 }
 ```
 
-      
-### Documentation Send Email By Framework
-* if you are using Code Igniter you can click link here [Doc SendEmail With Code Igniter](https://codeigniter.com/userguide3/libraries/email.html?__cf_chl_managed_tk__=4fd9af07df80f68bdb6ac675e61834ec44663146-1624856363-0-ARyxh8zm4SbESRW1FTHvoRANRL-RDWcHnJMW6CHqi_gEG6PfbJqnlDMfI7WzHnwUMA-A9AZFvOI25zlyI3ALdDgo_wbOkfPUKdhMhZFov2f7Lv71HlIdA74H0-Vx5RMwSOFkKS_vuc95-_aTWMdW7AI9rFjPNXFhhmoJ2GiPIEy3Ne2sKK01dR98NRWd50spDvyZOLgViQ8qM4ljZRrfmTUmtLvLr3nEt4MaZchOzJv1RWxoGyGdeICVS9_k8fJ2qs6-0VDs1p28TU199V0v83IMMa9CDQN1oLIwJ6UMW68Cw5KN6236r32PYCpTbDXg6Iy2TCN99gmCh1FPwVaP9b0jMj0fAXj38kXwmXPmv-GPrf3-8OCUvVgaE0Quyc5qO8qWvwDBP-L3qqu72h4a0Hm_tPhxBAMYM8KOwbqukaviyiaLJaKEwFf0sg4c8t3k9LF-gUPLlib5eQokO2si8gL94plbYfLTl1xfJJhi6r3zlFyeTGPbXDsJdJLweL4rROM9dOVkD31fEXXdLm8pt87qOwSiKI3oo6QQD9LKbteQVigdDXHHWgNhMn1MHuFnZSV1QjBFX0f9gKf1PJvfMj3WvWuxirtBzClpdjRksQHj2cwNbKzl3UQRLn9AVT2MQ8MTwFX2W-3yAURnt3PV64U)
-* if you are using Yii framework you can click link here [Doc SendEmail With Yii](https://www.yiiframework.com/wiki/468/send-mail-using-yiimail-extension)
-
-##### and this example send email using code igniter [send email using code igniter](https://github.com/vajirali/sendEmailbyCi.git) and this for [Doc SendEmail With Yii](https://jaxenter.com/java-app-emails-smtp-server-164144.html?__cf_chl_captcha_tk__=ea03a51d36ec7e0d2cc6ceeb92609fad1dc1c5e4-1624861873-0-ATqNd1670IIT5GlkooXsS7RfEjThirAi_uniLVkGdGHOs9jrDS0pxRSouk9ByP8IOaquCCmDuBr-8jyG6d9mSStH5fQNdhHPEK0_OHeb6fZmjg8KU2R4T4sbY7qJJlWWVXxI9Ejr1TlGemOfXV25JnS51AfYWWaURCSHOYkKZEScALuyuSwg9s_6WzqHtDiqUdWMJ6QksuUy_O9aeQ3Ijfd_6BaZqImOcljjL1u-LVTRIXwmlAyCEhC1Act3dQ9SyKWP8mhIFxgvaYU8hkySxXG9IjqCC7aAqUmv50aU2s6BdrqQPHT_WdweCyw1YlTGWUtM4j8YCHM8XvImMod-9xM9VDRv9vgINz8qjitxweW29BQ1JXaPOt3DT0pWmUbJrmwfVRSP_qhyHMWawfcYHjDHa24BDZT_dBjIyp8EaCkPhhXn_WDMuucRrYrlHKye72MCyeq29uxTDzzPNHER3zV9FXCKisGHjtvBRLLx2ns3oXJ3Gd0pc1wjtfowpPifw_xtti5LMcwnYndkS-KtIsjy_woVNN3AglY5ZLkEJDW_Kri-68Ha8J2zjt0sJPVW4daH5P0Xr-K88iM2BNbY7KGbeoRZvJ9TqFr-pPWWUu0HrQfKN6AN9wlGGH5E6pWugOdkmDVqWHWql4qV7SQ0v6Uf8xYxL6IQWoMkLEkHghCn) 
-
-### Thank You, Goodl Luck
+### Thank You for sharing , Good Luck
